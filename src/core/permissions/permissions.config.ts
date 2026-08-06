@@ -1,0 +1,65 @@
+export const ROLES = {
+  ADMIN: 'ADMIN',
+  INSTRUCTOR: 'INSTRUCTOR',
+  STUDENT: 'STUDENT',
+} as const;
+
+export type Role = (typeof ROLES)[keyof typeof ROLES];
+
+export const PERMISSIONS = {
+  // Course Permissions
+  COURSE_READ: 'course:read',
+  COURSE_CREATE: 'course:create',
+  COURSE_UPDATE: 'course:update',
+  COURSE_DELETE: 'course:delete',
+
+  // Assignment Permissions
+  ASSIGNMENT_READ: 'assignment:read',
+  ASSIGNMENT_CREATE: 'assignment:create',
+  ASSIGNMENT_SUBMIT: 'assignment:submit',
+  ASSIGNMENT_GRADE: 'assignment:grade',
+
+  // Quiz Permissions
+  QUIZ_READ: 'quiz:read',
+  QUIZ_TAKE: 'quiz:take',
+  QUIZ_MANAGE: 'quiz:manage',
+
+  // User Management
+  USER_MANAGE: 'user:manage',
+} as const;
+
+export type Permission = (typeof PERMISSIONS)[keyof typeof PERMISSIONS];
+
+export const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
+  ADMIN: [
+    PERMISSIONS.COURSE_READ,
+    PERMISSIONS.COURSE_CREATE,
+    PERMISSIONS.COURSE_UPDATE,
+    PERMISSIONS.COURSE_DELETE,
+    PERMISSIONS.ASSIGNMENT_READ,
+    PERMISSIONS.ASSIGNMENT_CREATE,
+    PERMISSIONS.ASSIGNMENT_SUBMIT,
+    PERMISSIONS.ASSIGNMENT_GRADE,
+    PERMISSIONS.QUIZ_READ,
+    PERMISSIONS.QUIZ_TAKE,
+    PERMISSIONS.QUIZ_MANAGE,
+    PERMISSIONS.USER_MANAGE,
+  ],
+  INSTRUCTOR: [
+    PERMISSIONS.COURSE_READ,
+    PERMISSIONS.COURSE_CREATE,
+    PERMISSIONS.COURSE_UPDATE,
+    PERMISSIONS.ASSIGNMENT_READ,
+    PERMISSIONS.ASSIGNMENT_CREATE,
+    PERMISSIONS.ASSIGNMENT_GRADE,
+    PERMISSIONS.QUIZ_READ,
+    PERMISSIONS.QUIZ_MANAGE,
+  ],
+  STUDENT: [
+    PERMISSIONS.COURSE_READ,
+    PERMISSIONS.ASSIGNMENT_READ,
+    PERMISSIONS.ASSIGNMENT_SUBMIT,
+    PERMISSIONS.QUIZ_READ,
+    PERMISSIONS.QUIZ_TAKE,
+  ],
+};
