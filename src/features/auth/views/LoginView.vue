@@ -7,6 +7,7 @@ import { useI18n } from 'vue-i18n';
 import { useAuthStore } from '@stores/auth.store';
 import { useAppToast } from '@shared/composables/useAppToast';
 import { AppButton } from '@shared/components/buttons';
+import { rules } from '@core/validation/rules';
 import { authApi } from '../api/auth.api';
 import { loginSchema, type LoginInput } from '../schemas/auth.schema';
 
@@ -88,19 +89,21 @@ const onSubmit = handleSubmit(async (values) => {
         </div>
 
         <form @submit.prevent="onSubmit" class="flex flex-col gap-4">
-          <!-- Email Input -->
+          <!-- Email Input passing rules prop explicitly -->
           <FormInput
             name="email"
             type="email"
+            :rules="rules.email"
             :label="t('auth.email')"
             :placeholder="t('auth.emailPlaceholder')"
             required
           />
 
-          <!-- Password Input -->
+          <!-- Password Input passing rules prop explicitly -->
           <FormInput
             name="password"
             type="password"
+            :rules="rules.password"
             :label="t('auth.password')"
             :placeholder="t('auth.passwordPlaceholder')"
             required

@@ -7,6 +7,7 @@ import { useI18n } from 'vue-i18n';
 import { useAuthStore } from '@stores/auth.store';
 import { useAppToast } from '@shared/composables/useAppToast';
 import { AppButton } from '@shared/components/buttons';
+import { rules } from '@core/validation/rules';
 import { registerSchema, type RegisterInput } from '../schemas/auth.schema';
 
 // Shadcn UI Components
@@ -74,29 +75,32 @@ const onSubmit = handleSubmit(async (values) => {
 
       <CardContent class="pt-6">
         <form @submit.prevent="onSubmit" class="flex flex-col gap-4">
-          <!-- Full Name -->
+          <!-- Full Name passing rules prop explicitly -->
           <FormInput
             name="personName"
             type="text"
+            :rules="rules.personName"
             :label="t('auth.personName')"
             :placeholder="t('auth.personNamePlaceholder')"
             required
           />
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <!-- Email (with Mail Icon) -->
+            <!-- Email passing rules prop explicitly -->
             <FormInput
               name="email"
               type="email"
+              :rules="rules.email"
               :label="t('auth.email')"
               :placeholder="t('auth.emailPlaceholder')"
               required
             />
 
-            <!-- Phone (with Phone Icon) -->
+            <!-- Phone passing rules prop explicitly -->
             <FormInput
               name="phone"
               type="tel"
+              :rules="rules.phone"
               :label="t('auth.phone')"
               :placeholder="t('auth.phonePlaceholder')"
               required
@@ -104,10 +108,11 @@ const onSubmit = handleSubmit(async (values) => {
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <!-- Organization Name -->
+            <!-- Organization Name passing rules prop explicitly -->
             <FormInput
               name="orgName"
               type="text"
+              :rules="rules.orgName"
               :label="t('auth.orgName')"
               :placeholder="t('auth.orgNamePlaceholder')"
               required
@@ -124,10 +129,11 @@ const onSubmit = handleSubmit(async (values) => {
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <!-- Password (with Lock Icon & Eye Toggle) -->
+            <!-- Password passing rules prop explicitly -->
             <FormInput
               name="password"
               type="password"
+              :rules="rules.password"
               :label="t('auth.password')"
               :placeholder="t('auth.passwordPlaceholder')"
               required
