@@ -154,7 +154,7 @@ defineExpose({
 </script>
 
 <template>
-  <section class="flex w-full flex-col gap-5 p-50">
+  <section class="flex w-full flex-col gap-5">
     <!-- Header -->
     <header
         v-if="title || description || $slots['title-actions']"
@@ -193,14 +193,13 @@ defineExpose({
     <!-- Table -->
     <div class="overflow-hidden rounded-2xl border border-border/60 bg-card shadow-sm">
       <div class="w-full overflow-x-auto">
-        <Table class="min-w-[720px]">
-          <TableHeader class="bg-muted/40">
+        <Table>
+          <TableHeader>
             <TableRow
                 v-for="headerGroup in table.getHeaderGroups()"
                 :key="headerGroup.id"
-                class="h-[56px] border-b border-border/60 hover:bg-transparent"
             >
-              <TableHead v-if="canSelect" class="w-14 text-center">
+              <TableHead v-if="canSelect">
                 <button
                     type="button"
                     class="mx-auto flex size-5 items-center justify-center rounded-full border-2 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
@@ -221,7 +220,6 @@ defineExpose({
               <TableHead
                   v-for="header in headerGroup.headers"
                   :key="header.id"
-                  class="h-[56px] px-4 text-center text-sm font-semibold text-foreground"
               >
                 <slot
                     :name="`header-${header.column.id}`"
@@ -294,10 +292,9 @@ defineExpose({
               <TableRow
                   v-for="row in table.getRowModel().rows"
                   :key="row.id"
-                  class="h-[72px] border-b border-border/50 last:border-b-0"
                   :data-state="isRowSelected(row.original) ? 'selected' : undefined"
               >
-                <TableCell v-if="canSelect" class="w-14 text-center">
+                <TableCell v-if="canSelect">
                   <button
                       type="button"
                       role="checkbox"
@@ -318,7 +315,6 @@ defineExpose({
                 <TableCell
                     v-for="cell in row.getVisibleCells()"
                     :key="cell.id"
-                    class="px-4 text-center text-sm text-foreground"
                 >
                   <slot
                       :name="`cell-${cell.column.id}`"

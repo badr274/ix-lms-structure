@@ -13,6 +13,7 @@ export interface Branch {
   status: 'active' | 'deactive'
 }
 
+import { AppIconButton } from '@shared/components/buttons'
 const branchColumns: ColumnDef<Branch>[] = [
   {
     id: 'branch_id',
@@ -45,7 +46,6 @@ const branchColumns: ColumnDef<Branch>[] = [
     cell: () => null, // rendered through the #cell-actions slot
   },
 ]
-
 const branchFilters: FilterDefinition[] = [
   {
     id: 'status',
@@ -57,7 +57,6 @@ const branchFilters: FilterDefinition[] = [
     ],
   },
 ]
-
 /** No request is made: search, filter, sort and pagination all run locally. */
 const branches = ref<Branch[]>([
   { id: 1, branch_id: '2568713', name: 'IX Training Center', address: '74C Aaliyah River, Bayerhaven', status: 'active' },
@@ -72,8 +71,7 @@ const branches = ref<Branch[]>([
 </script>
 
 <template>
-  <div class="flex flex-col w-full">
-    <AppDataTable
+  <AppDataTable
       :table-data="branches"
       :columns="branchColumns"
       :filters="branchFilters"
@@ -85,18 +83,35 @@ const branches = ref<Branch[]>([
       :page-size-options="[5, 10, 25]"
       hide-export
     >
-      <template #cell-status="{ row }">
-        <Badge
+    <template #cell-status="{ row }">
+      <Badge
           class="rounded-full px-4 py-1 text-xs font-medium"
           :class="
             (row as Branch).status === 'active'
               ? 'bg-primary/10 text-primary hover:bg-primary/10'
               : 'bg-muted text-muted-foreground hover:bg-muted'
           "
-        >
-          {{ (row as Branch).status === 'active' ? 'Active' : 'Deactive' }}
-        </Badge>
-      </template>
-    </AppDataTable>
-  </div>
+      >
+        {{ (row as Branch).status === 'active' ? 'Active' : 'Deactive' }}
+      </Badge>
+    </template>
+    <template #cell-actions="{ row }">
+      <div class="mx-auto inline-flex h-8 items-center rounded-full border border-border bg-background px-4">
+        <AppIconButton icon="eye" :label="`View ${row.name}`" />
+
+        <span class="mx-2 h-4 w-px bg-border" aria-hidden="true" />
+
+        <AppIconButton
+            icon="ellipsis"
+            tone="muted"
+            :label="`More actions for ${row.name}`"
+        />
+      </div>
+    </template>
+  </AppDataTable>
 </template>
+
+
+<style scoped>
+
+</style>
