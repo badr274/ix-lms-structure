@@ -53,10 +53,10 @@ export const rules = {
    */
   password: z
     .string({ required_error: t('validation.passwordRequired', 'كلمة المرور مطلوبة') })
-    .min(8, { message: t('validation.passwordFormat', 'كلمة المرور يجب أن لا تقل عن 8 خانات', { min: 8 }) })
-    .regex(/^(?=.*[A-Za-z])(?=.*\d)/, {
-      message: t('validation.passwordFormat', 'كلمة المرور يجب أن تحتوي على حرف واحد ورقم واحد على الأقل', { min: 8 }),
-    }),
+    .min(8, { message: t('validation.passwordFormat', 'كلمة المرور يجب أن لا تقل عن 8 خانات', { min: 8 }) }),
+    // .regex(/^(?=.*[A-Za-z])(?=.*\d)/, {
+    //   message: t('validation.passwordFormat', 'كلمة المرور يجب أن تحتوي على حرف واحد ورقم واحد على الأقل', { min: 8 }),
+    // }),
 
   /**
    * V-04: Organization name
