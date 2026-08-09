@@ -7,9 +7,34 @@ export function usePermissions() {
 
   const userRole = computed<Role>(() => (authStore.user?.role as Role) || 'STUDENT');
 
+  const userPermissions = computed<Permission[]>(() => {
+    // 1. If backend API explicitly provided a list of permissions for this user:
+    if (authStore.user?.permissions && Array.isArray(authStore.user.permissions)) {
+      return authStore.user.permissions;
+    }
+    // 2. Otherwise fallback to client-side role-to-permissions map:
+    return ROLE_PERMISSIONS[userRole.value] || [];
+  });
+
   function hasPermission(permission: Permission): boolean {
-    const permissions = ROLE_PERMISSIONS[userRole.value] || [];
-    return permissions.includes(permission);
+    // Super-admin bypass: ADMIN always has all permissions
+    if (userRole.value === 'ADMIN') return true;
+
+    return userPermissions.value.includes(permission);
+  }
+
+  function hasAnyPermission(permissions: Permission[]): boolean {
+    if (userRole.value === 'ADMIN') return true;
+    if (!permissions || permissions.length === 0) return true;
+
+    return permissions.some((p) => userPermissions.value.includes(p));
+  }
+
+  function hasAllPermissions(permissions: Permission[]): boolean {
+    if (userRole.value === 'ADMIN') return true;
+    if (!permissions || permissions.length === 0) return true;
+
+    return permissions.every((p) => userPermissions.value.includes(p));
   }
 
   function hasRole(role: Role | Role[]): boolean {
@@ -21,7 +46,10 @@ export function usePermissions() {
 
   return {
     userRole,
+    userPermissions,
     hasPermission,
+    hasAnyPermission,
+    hasAllPermissions,
     hasRole,
   };
 }

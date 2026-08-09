@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n';
 import { useNavigation } from '@core/navigation';
 import { AppLogo } from '@shared/components/icons';
 import SidebarNavItem from './SidebarNavItem.vue';
@@ -18,6 +19,7 @@ const emit = defineEmits<{
   (e: 'close'): void;
 }>();
 
+const { t } = useI18n();
 const { visibleSections } = useNavigation();
 </script>
 
@@ -63,21 +65,21 @@ const { visibleSections } = useNavigation();
         :key="section.id"
         class="flex flex-col"
       >
-        <!-- Section Header Label (Figma x=24, y=120) -->
-        <div v-if="!collapsed && section.title" class="px-6 pb-2 pt-2">
+        <!-- Section Header Label (Figma x=24, y=120) with i18n support -->
+        <div v-if="!collapsed && (section.titleKey || section.title)" class="px-6 pb-2 pt-2">
           <span class="font-ibm text-[12px] font-semibold text-sidebar-muted">
-            {{ section.title }}
+            {{ section.titleKey ? t(section.titleKey) : section.title }}
           </span>
         </div>
         <div v-else class="h-3" />
 
-        <!-- Nav Items Stack (with spacing for outer curve fillets) -->
+        <!-- Nav Items Stack (with i18n labelKey translation) -->
         <nav class="flex flex-col gap-2">
           <SidebarNavItem
             v-for="item in section.items"
             :key="item.to"
             :to="item.to"
-            :label="item.label"
+            :label="item.labelKey ? t(item.labelKey) : item.label"
             :icon="item.icon"
             :collapsed="collapsed"
             @click="emit('navigate')"

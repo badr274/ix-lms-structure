@@ -11,9 +11,20 @@
     "langEn": "🇬🇧 English"
   },
   "nav": {
-    "createCourse": "➕ إضافة دورة جديدة",
-    "viewCourses": "📚 عرض الدورات",
-    "dashboard": "📊 لوحة التحكم",
+    "mainMenu": "القائمة الرئيسية",
+    "dashboard": "لوحة التحكم",
+    "branches": "الفروع",
+    "roles": "الأدوار والصلاحيات",
+    "users": "المستخدمين",
+    "learners": "المتدربين",
+    "guardian": "أولياء الأمور",
+    "auditLog": "سجل التدقيق",
+    "settings": "الإعدادات",
+    "courses": "الدورات التعليمية",
+    "createCourse": "إضافة دورة جديدة",
+    "viewCourses": "عرض الدورات",
+    "branch": "الفرع",
+    "selectBranch": "اختر الفرع",
     "login": "تسجيل الدخول",
     "register": "إنشاء حساب"
   },

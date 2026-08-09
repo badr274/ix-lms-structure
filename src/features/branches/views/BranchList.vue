@@ -1,7 +1,18 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import AppDataTable from "@shared/components/data-table/AppDataTable.vue";
+import type { ColumnDef } from '@tanstack/vue-table'
+import type { FilterDefinition } from '@shared/types/main-table-types'
+import AppDataTable from '@shared/components/data-table/AppDataTable.vue'
 import { Badge } from '@/components/ui/badge'
+
+export interface Branch {
+  id: number
+  branch_id: string
+  name: string
+  address: string
+  status: 'active' | 'deactive'
+}
+
 const branchColumns: ColumnDef<Branch>[] = [
   {
     id: 'branch_id',
@@ -34,6 +45,7 @@ const branchColumns: ColumnDef<Branch>[] = [
     cell: () => null, // rendered through the #cell-actions slot
   },
 ]
+
 const branchFilters: FilterDefinition[] = [
   {
     id: 'status',
@@ -45,6 +57,7 @@ const branchFilters: FilterDefinition[] = [
     ],
   },
 ]
+
 /** No request is made: search, filter, sort and pagination all run locally. */
 const branches = ref<Branch[]>([
   { id: 1, branch_id: '2568713', name: 'IX Training Center', address: '74C Aaliyah River, Bayerhaven', status: 'active' },
@@ -59,7 +72,8 @@ const branches = ref<Branch[]>([
 </script>
 
 <template>
-  <AppDataTable
+  <div class="flex flex-col w-full">
+    <AppDataTable
       :table-data="branches"
       :columns="branchColumns"
       :filters="branchFilters"
@@ -70,23 +84,19 @@ const branches = ref<Branch[]>([
       :initial-page-size="5"
       :page-size-options="[5, 10, 25]"
       hide-export
-  >
-    <template #cell-status="{ row }">
-      <Badge
+    >
+      <template #cell-status="{ row }">
+        <Badge
           class="rounded-full px-4 py-1 text-xs font-medium"
           :class="
-          row.status === 'active'
-            ? 'bg-primary/10 text-primary hover:bg-primary/10'
-            : 'bg-muted text-muted-foreground hover:bg-muted'
-        "
-      >
-        {{ row.status === 'active' ? 'Active' : 'Deactive' }}
-      </Badge>
-    </template>
-  </AppDataTable>
+            (row as Branch).status === 'active'
+              ? 'bg-primary/10 text-primary hover:bg-primary/10'
+              : 'bg-muted text-muted-foreground hover:bg-muted'
+          "
+        >
+          {{ (row as Branch).status === 'active' ? 'Active' : 'Deactive' }}
+        </Badge>
+      </template>
+    </AppDataTable>
+  </div>
 </template>
-
-
-<style scoped>
-
-</style>

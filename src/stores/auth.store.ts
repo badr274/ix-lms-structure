@@ -1,12 +1,17 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import type { UserRole } from '@core/types';
+import type { Permission } from '@core/permissions';
 
 export interface UserProfile {
   id: string;
   name: string;
   email: string;
   role: UserRole;
+  permissions?: Permission[];
+  avatar?: string;
+  branchId?: string;
+  branchName?: string;
 }
 
 export const useAuthStore = defineStore('auth', () => {

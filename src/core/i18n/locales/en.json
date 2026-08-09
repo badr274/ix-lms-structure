@@ -11,9 +11,20 @@
     "langEn": "🇬🇧 English"
   },
   "nav": {
-    "createCourse": "➕ Add New Course",
-    "viewCourses": "📚 View Courses",
-    "dashboard": "📊 Dashboard",
+    "mainMenu": "Main Menu",
+    "dashboard": "Dashboard",
+    "branches": "Branches",
+    "roles": "Roles & Permissions",
+    "users": "Users",
+    "learners": "Learners",
+    "guardian": "Guardian",
+    "auditLog": "Audit Log",
+    "settings": "Settings",
+    "courses": "Courses",
+    "createCourse": "Add New Course",
+    "viewCourses": "View Courses",
+    "branch": "Branch",
+    "selectBranch": "Select Branch",
     "login": "Log In",
     "register": "Register"
   },

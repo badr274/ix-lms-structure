@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { IconChevronDown, IconBranches } from '@shared/components/icons';
 
 interface Props {
@@ -8,6 +9,8 @@ interface Props {
 withDefaults(defineProps<Props>(), {
   collapsed: false,
 });
+
+const { t } = useI18n();
 
 const branches = [
   { id: '1', name: 'IX Training Center' },
@@ -50,7 +53,7 @@ function selectBranch(branch: (typeof branches)[0]) {
       :aria-expanded="isOpen"
     >
       <span class="font-ibm text-[12px] font-normal text-sidebar-foreground/80 leading-[1.4]">
-        Branch
+        {{ t('nav.branch') }}
       </span>
       <div class="flex w-full items-center justify-between">
         <span class="font-ibm text-[14px] font-medium text-sidebar-foreground leading-[1.4] truncate">
@@ -74,7 +77,7 @@ function selectBranch(branch: (typeof branches)[0]) {
       role="listbox"
     >
       <div class="px-2.5 py-1.5 text-[11px] font-semibold text-sidebar-muted uppercase tracking-wider">
-        Select Branch
+        {{ t('nav.selectBranch') }}
       </div>
       <button
         v-for="branch in branches"
