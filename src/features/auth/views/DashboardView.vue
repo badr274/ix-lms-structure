@@ -1,104 +1,103 @@
 <script setup lang="ts">
-import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
-import { useThemeStore } from '@stores/theme.store';
 import { useAuthStore } from '@stores/auth.store';
-import { useLocaleStore } from '@stores/locale.store';
-import { useAppToast } from '@shared/composables/useAppToast';
+import { AppLayout, PageHeader } from '@shared/components/layout';
 
 // Shadcn UI Components
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 
 const { t } = useI18n();
-const router = useRouter();
-const themeStore = useThemeStore();
 const authStore = useAuthStore();
-const localeStore = useLocaleStore();
-const appToast = useAppToast();
-
-function handleLogout() {
-  authStore.logout();
-  appToast.info(t('auth.logout'));
-  router.push({ name: 'login' });
-}
 </script>
 
 <template>
-  <div class="min-h-screen bg-background text-foreground flex flex-col font-sans transition-colors duration-300">
-    <!-- Navbar Header -->
-    <header class="sticky top-0 z-40 border-b border-border bg-card/80 backdrop-blur-md px-6 py-4 flex justify-between items-center shadow-xs">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-primary text-primary-foreground flex items-center justify-center font-bold text-xl shadow-md">
-          IX
-        </div>
-        <div>
-          <h1 class="text-lg font-bold tracking-tight text-foreground m-0">{{ t('header.title') }}</h1>
-          <p class="text-xs text-muted-foreground m-0">{{ t('header.subtitle') }}</p>
-        </div>
-      </div>
+  <AppLayout title="Dashboard">
+    <div class="flex flex-col gap-6 max-w-6xl w-full">
+      <!-- Reusable Consistent PageHeader (No enclosing border) -->
+      <PageHeader
+        :title="t('dashboard.title')"
+        :description="t('dashboard.description')"
+        action-text="Create Course"
+        :action-to="{ name: 'courses-list' }"
+      />
 
-      <!-- Right Controls: Theme + i18n Language Toggle + Logout -->
-      <div class="flex items-center gap-3">
-        <!-- Auth User Badge -->
-        <Badge v-if="authStore.user" variant="outline" class="hidden sm:flex items-center gap-2 py-1.5 px-3">
-          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-          <span>{{ authStore.user.name }}</span>
-        </Badge>
-
-        <!-- Language Switcher Toggle -->
-        <Button variant="outline" size="sm" @click="localeStore.toggleLocale()" class="text-xs font-bold gap-1.5 cursor-pointer">
-          <span v-if="localeStore.currentLocale === 'ar'">🌐 English (EN)</span>
-          <span v-else>🌐 العربية (AR)</span>
-        </Button>
-
-        <!-- Dark / Light Mode Toggle Button -->
-        <Button variant="outline" size="sm" @click="themeStore.toggleTheme()" class="text-xs font-medium gap-2 cursor-pointer">
-          <span v-if="themeStore.isDark">{{ t('header.toggleThemeDark') }}</span>
-          <span v-else>{{ t('header.toggleThemeLight') }}</span>
-        </Button>
-
-        <!-- Logout Button -->
-        <Button variant="destructive" size="sm" @click="handleLogout()" class="text-xs font-semibold cursor-pointer">
-          {{ t('auth.logout') }}
-        </Button>
-      </div>
-    </header>
-
-    <!-- Main Dashboard Container -->
-    <main class="flex-1 max-w-4xl w-full mx-auto p-6 flex flex-col gap-6">
-      <Card class="p-8 shadow-sm border border-border flex flex-col gap-6">
-        <CardHeader class="p-0 border-b border-border pb-4">
-          <Badge variant="secondary" class="w-fit mb-2">
-            🚀 {{ t('header.version') }}
-          </Badge>
-          <CardTitle class="text-2xl font-bold">{{ t('dashboard.title') }}</CardTitle>
-          <CardDescription class="text-sm mt-1">
-            {{ t('dashboard.description') }}
+      <!-- User Profile Details Summary Box -->
+      <Card class="border border-border shadow-xs">
+        <CardHeader class="border-b border-border pb-4">
+          <CardTitle class="text-lg font-bold font-heading text-foreground">
+            {{ t('dashboard.userSectionTitle') }}
+          </CardTitle>
+          <CardDescription class="text-xs text-muted-foreground">
+            Current session and account privileges overview
           </CardDescription>
         </CardHeader>
 
-        <CardContent class="p-0 flex flex-col gap-4">
-          <div class="p-4 rounded-xl bg-muted border border-border flex flex-col gap-2">
-            <h3 class="text-sm font-bold text-foreground m-0">{{ t('dashboard.userSectionTitle') }}</h3>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-muted-foreground mt-1">
-              <div><strong>الاسم / Name:</strong> {{ authStore.user?.name || '—' }}</div>
-              <div><strong>البريد الإلكتروني / Email:</strong> {{ authStore.user?.email || '—' }}</div>
-              <div><strong>الصلاحية / Role:</strong> {{ authStore.user?.role || 'USER' }}</div>
-              <div><strong>حالة الحساب / Status:</strong> <span class="text-emerald-500 font-bold">نشط ومرخص (Active)</span></div>
+        <CardContent class="pt-6 flex flex-col gap-5">
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-xs">
+            <div class="flex flex-col gap-1 p-3 rounded-xl bg-muted/40 border border-border">
+              <span class="text-muted-foreground">الاسم / Name</span>
+              <span class="font-bold text-foreground">{{ authStore.user?.name || 'Saeed Kamel' }}</span>
+            </div>
+            <div class="flex flex-col gap-1 p-3 rounded-xl bg-muted/40 border border-border">
+              <span class="text-muted-foreground">البريد / Email</span>
+              <span class="font-bold text-foreground truncate">{{ authStore.user?.email || 's.ferguson@example.com' }}</span>
+            </div>
+            <div class="flex flex-col gap-1 p-3 rounded-xl bg-muted/40 border border-border">
+              <span class="text-muted-foreground">الصلاحية / Role</span>
+              <span class="font-bold text-primary">{{ authStore.user?.role || 'Lab Manager' }}</span>
+            </div>
+            <div class="flex flex-col gap-1 p-3 rounded-xl bg-muted/40 border border-border">
+              <span class="text-muted-foreground">حالة الحساب / Status</span>
+              <span class="font-bold text-emerald-600 dark:text-emerald-400">نشط (Active)</span>
             </div>
           </div>
 
+          <!-- Quick Navigation Actions -->
           <div class="flex justify-end gap-3 pt-2">
             <router-link :to="{ name: 'courses-list' }">
-              <Button variant="default" class="font-bold cursor-pointer">
+              <Button variant="outline" class="font-bold cursor-pointer">
                 {{ t('nav.viewCourses') }} 📚
               </Button>
             </router-link>
           </div>
         </CardContent>
       </Card>
-    </main>
-  </div>
+
+      <!-- Dashboard KPI Summary Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <Card class="p-4 border border-border flex flex-col justify-between gap-2 shadow-xs">
+          <span class="text-xs font-medium text-muted-foreground">Total Learners</span>
+          <div class="flex items-baseline justify-between">
+            <span class="text-2xl font-extrabold text-foreground font-heading">1,248</span>
+            <span class="text-xs font-semibold text-emerald-600 dark:text-emerald-400">+12%</span>
+          </div>
+        </Card>
+
+        <Card class="p-4 border border-border flex flex-col justify-between gap-2 shadow-xs">
+          <span class="text-xs font-medium text-muted-foreground">Active Courses</span>
+          <div class="flex items-baseline justify-between">
+            <span class="text-2xl font-extrabold text-foreground font-heading">42</span>
+            <span class="text-xs font-semibold text-primary">Published</span>
+          </div>
+        </Card>
+
+        <Card class="p-4 border border-border flex flex-col justify-between gap-2 shadow-xs">
+          <span class="text-xs font-medium text-muted-foreground">Active Branches</span>
+          <div class="flex items-baseline justify-between">
+            <span class="text-2xl font-extrabold text-foreground font-heading">4</span>
+            <span class="text-xs font-semibold text-muted-foreground">Branches</span>
+          </div>
+        </Card>
+
+        <Card class="p-4 border border-border flex flex-col justify-between gap-2 shadow-xs">
+          <span class="text-xs font-medium text-muted-foreground">Completion Rate</span>
+          <div class="flex items-baseline justify-between">
+            <span class="text-2xl font-extrabold text-foreground font-heading">89.4%</span>
+            <span class="text-xs font-semibold text-emerald-600 dark:text-emerald-400">+4.2%</span>
+          </div>
+        </Card>
+      </div>
+    </div>
+  </AppLayout>
 </template>

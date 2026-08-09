@@ -3,18 +3,16 @@ import { ref, computed } from 'vue';
 import { useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
 import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
-import { useThemeStore } from '@stores/theme.store';
-import { useAuthStore } from '@stores/auth.store';
 import { useLocaleStore } from '@stores/locale.store';
 import AppSpinner from '@shared/components/ui/AppSpinner.vue';
 import { AppButton } from '@shared/components/buttons';
-import { Can, usePermissions, PERMISSIONS } from '@core/permissions';
+import { Can, PERMISSIONS } from '@core/permissions';
 import { createCourseSchema, type CreateCourseInput } from '@features/courses/schemas/course.schema';
 import { useCoursesQuery, useCreateCourseMutation, useDeleteCourseMutation } from '@features/courses/composables/useCourses';
+import { AppLayout } from '@shared/components/layout';
+import { useModal } from '@shared/components/modals';
 
 // Shadcn Vue UI Components
-import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
@@ -28,11 +26,8 @@ import {
 } from '@shared/components/inputs';
 
 const { t } = useI18n();
-const router = useRouter();
-const themeStore = useThemeStore();
-const authStore = useAuthStore();
 const localeStore = useLocaleStore();
-const { userRole } = usePermissions();
+const modal = useModal();
 
 // Active Tab ('courses' | 'create')
 const activeSection = ref<'courses' | 'create'>('courses');
@@ -75,76 +70,38 @@ const onSubmit = handleSubmit((values) => {
       onSuccess: () => {
         resetForm();
         activeSection.value = 'courses';
+        modal.success({
+          title: 'Congratulations !',
+          description: 'Course created successfully.',
+        });
       },
     }
   );
 });
 
-function removeCourse(id: string) {
-  deleteCourseMutation.mutate(id);
-}
-
-function handleLogout() {
-  authStore.logout();
-  router.push({ name: 'login' });
+async function removeCourse(id: string) {
+  const confirmed = await modal.confirm({
+    title: t('courses.deleteBtn', 'Delete Course'),
+    description: 'Are you sure you want to delete this course? This action cannot be undone.',
+    variant: 'destructive',
+    confirmText: 'Delete',
+  });
+  if (confirmed) {
+    deleteCourseMutation.mutate(id);
+  }
 }
 </script>
 
 <template>
-  <div class="min-h-screen bg-background text-foreground flex flex-col font-sans transition-colors duration-300">
-    <!-- Navbar Header -->
-    <header class="sticky top-0 z-40 border-b border-border bg-card/80 backdrop-blur-md px-6 py-4 flex justify-between items-center shadow-xs">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-primary text-primary-foreground flex items-center justify-center font-bold text-xl shadow-md">
-          IX
-        </div>
-        <div>
-          <h1 class="text-lg font-bold tracking-tight text-foreground m-0">{{ t('header.title') }}</h1>
-          <p class="text-xs text-muted-foreground m-0">{{ t('header.subtitle') }}</p>
-        </div>
-      </div>
-
-      <!-- Right Controls -->
-      <div class="flex items-center gap-3">
-        <!-- Auth User Badge with Role -->
-        <Badge v-if="authStore.user" variant="outline" class="hidden sm:flex items-center gap-2 py-1.5 px-3">
-          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-          <span>{{ authStore.user.name }} ({{ userRole }})</span>
-        </Badge>
-
-        <router-link :to="{ name: 'dashboard' }">
-          <Button variant="ghost" size="sm" class="text-xs font-semibold">
-            📊 {{ t('nav.dashboard') }}
-          </Button>
-        </router-link>
-
-        <!-- Language Switcher Toggle -->
-        <Button variant="outline" size="sm" @click="localeStore.toggleLocale()" class="text-xs font-bold gap-1.5 cursor-pointer">
-          <span v-if="localeStore.currentLocale === 'ar'">🌐 English (EN)</span>
-          <span v-else>🌐 العربية (AR)</span>
-        </Button>
-
-        <!-- Dark / Light Mode Toggle Button -->
-        <Button variant="outline" size="sm" @click="themeStore.toggleTheme()" class="text-xs font-medium gap-2 cursor-pointer">
-          <span v-if="themeStore.isDark">{{ t('header.toggleThemeDark') }}</span>
-          <span v-else>{{ t('header.toggleThemeLight') }}</span>
-        </Button>
-
-        <Button variant="destructive" size="sm" @click="handleLogout()" class="text-xs font-semibold cursor-pointer">
-          {{ t('auth.logout') }}
-        </Button>
-      </div>
-    </header>
-
-    <!-- Main Container -->
-    <main class="flex-1 max-w-5xl w-full mx-auto p-6 flex flex-col gap-6">
+  <AppLayout title="Courses">
+    <div class="flex flex-col gap-6 max-w-6xl w-full">
       <!-- Welcome Hero Card -->
-      <Card class="relative overflow-hidden p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <Card class="relative overflow-hidden p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border border-border shadow-xs">
         <div>
           <Badge variant="secondary" class="mb-2">
             🚀 {{ t('header.version') }}
           </Badge>
-          <h2 class="text-xl font-bold text-foreground m-0">{{ t('courses.listTitle') }}</h2>
+          <h2 class="text-xl font-bold text-foreground font-heading m-0">{{ t('courses.listTitle') }}</h2>
           <p class="text-sm text-muted-foreground mt-1 m-0">
             {{ t('header.welcomeSubtitle') }}
           </p>
@@ -165,44 +122,57 @@ function handleLogout() {
         </Tabs>
       </Card>
 
-      <Tabs v-model="activeSection">
-        <!-- SECTION 1: COURSES LIST VIEW -->
+      <!-- Main Content Container with TabsContent -->
+      <Tabs :model-value="activeSection">
+        <!-- SECTION 1: VIEW COURSES LIST -->
         <TabsContent value="courses">
-          <div class="flex flex-col gap-4">
-            <div class="flex justify-between items-center">
-              <h3 class="text-lg font-bold text-foreground m-0">{{ t('courses.listTitle') }}</h3>
-              <span class="text-xs text-muted-foreground">{{ t('courses.count') }}: {{ coursesList?.length || 0 }}</span>
+          <!-- Loading State using Global Spinner -->
+          <div v-if="isCoursesLoading" class="flex flex-col items-center justify-center p-12 gap-3">
+            <AppSpinner size="lg" />
+            <span class="text-xs text-muted-foreground">{{ t('courses.loading') }}</span>
+          </div>
+
+          <!-- Empty State -->
+          <div v-else-if="!coursesList || coursesList.length === 0" class="text-center p-12 border border-dashed border-border rounded-xl bg-card">
+            <div class="text-3xl mb-2">📂</div>
+            <p class="text-muted-foreground text-sm font-medium">{{ t('courses.noCourses') }}</p>
+            <Can :permission="PERMISSIONS.COURSE_CREATE">
+              <AppButton class="mt-4" size="sm" @click="activeSection = 'create'">
+                ➕ {{ t('courses.addCourseBtn') }}
+              </AppButton>
+            </Can>
+          </div>
+
+          <!-- Courses Grid List -->
+          <div v-else class="flex flex-col gap-4">
+            <div class="flex justify-between items-center px-1">
+              <span class="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                {{ t('courses.totalCount') }}: {{ coursesList.length }}
+              </span>
+              <Can :permission="PERMISSIONS.COURSE_CREATE">
+                <AppButton size="sm" @click="activeSection = 'create'">
+                  ➕ {{ t('courses.addCourseBtn') }}
+                </AppButton>
+              </Can>
             </div>
 
-            <div v-if="isCoursesLoading" class="p-12 flex flex-col items-center justify-center gap-3 text-muted-foreground">
-              <AppSpinner size="lg" />
-              <span class="text-xs font-medium">Loading courses...</span>
-            </div>
-
-            <div v-else-if="!coursesList || coursesList.length === 0" class="p-8 text-center text-muted-foreground border border-dashed rounded-xl">
-              {{ t('courses.empty') }}
-            </div>
-
-            <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
               <Card
                 v-for="course in coursesList"
                 :key="course.id"
-                class="p-5 flex flex-col justify-between gap-4 transition-all hover:border-primary/50"
+                class="overflow-hidden border border-border bg-card hover:shadow-md transition-shadow flex flex-col justify-between p-5"
               >
-                <div class="flex flex-col gap-2">
-                  <div class="flex justify-between items-start gap-2">
-                    <Badge :variant="course.status === 'PUBLISHED' ? 'default' : 'secondary'">
-                      {{ course.status === 'PUBLISHED' ? t('courses.statusActive') : t('courses.statusDraft') }}
+                <div>
+                  <div class="flex justify-between items-start gap-2 mb-2">
+                    <Badge variant="outline" class="font-mono text-[10px]">
+                      {{ course.category || 'General' }}
                     </Badge>
-                    <span class="text-lg font-extrabold text-foreground">${{ course.price }}</span>
+                    <span class="text-sm font-bold text-primary">${{ course.price }}</span>
                   </div>
 
-                  <h4 class="text-base font-bold text-foreground m-0 leading-snug">
+                  <h3 class="font-bold text-base text-foreground font-heading mt-1">
                     {{ localeStore.currentLocale === 'ar' ? course.title.ar : course.title.en }}
-                  </h4>
-                  <p class="text-xs text-muted-foreground m-0">
-                    {{ localeStore.currentLocale === 'ar' ? course.title.en : course.title.ar }}
-                  </p>
+                  </h3>
 
                   <p v-if="course.description?.ar" class="text-xs text-muted-foreground line-clamp-2 mt-1">
                     {{ localeStore.currentLocale === 'ar' ? course.description.ar : course.description.en }}
@@ -234,10 +204,10 @@ function handleLogout() {
         <!-- SECTION 2: CREATE COURSE FORM (Protected) -->
         <TabsContent value="create">
           <Can :permission="PERMISSIONS.COURSE_CREATE">
-            <Card>
+            <Card class="border border-border shadow-xs">
               <CardHeader class="border-b border-border pb-4 flex flex-col md:flex-row justify-between md:items-center gap-4">
                 <div>
-                  <CardTitle>{{ t('form.createCourseTitle') }}</CardTitle>
+                  <CardTitle class="font-heading">{{ t('form.createCourseTitle') }}</CardTitle>
                   <CardDescription>{{ t('form.createCourseSub') }}</CardDescription>
                 </div>
 
@@ -320,6 +290,6 @@ function handleLogout() {
           </Can>
         </TabsContent>
       </Tabs>
-    </main>
-  </div>
+    </div>
+  </AppLayout>
 </template>

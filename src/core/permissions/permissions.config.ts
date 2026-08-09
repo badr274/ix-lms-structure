@@ -7,6 +7,18 @@ export const ROLES = {
 export type Role = (typeof ROLES)[keyof typeof ROLES];
 
 export const PERMISSIONS = {
+  // Dashboard Permissions
+  DASHBOARD_VIEW: 'dashboard:view',
+
+  // Core Management Permissions
+  BRANCH_MANAGE: 'branch:manage',
+  ROLE_MANAGE: 'role:manage',
+  USER_MANAGE: 'user:manage',
+  LEARNER_MANAGE: 'learner:manage',
+  GUARDIAN_MANAGE: 'guardian:manage',
+  AUDIT_VIEW: 'audit:view',
+  SETTINGS_MANAGE: 'settings:manage',
+
   // Course Permissions
   COURSE_READ: 'course:read',
   COURSE_CREATE: 'course:create',
@@ -23,15 +35,20 @@ export const PERMISSIONS = {
   QUIZ_READ: 'quiz:read',
   QUIZ_TAKE: 'quiz:take',
   QUIZ_MANAGE: 'quiz:manage',
-
-  // User Management
-  USER_MANAGE: 'user:manage',
 } as const;
 
 export type Permission = (typeof PERMISSIONS)[keyof typeof PERMISSIONS];
 
 export const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
   ADMIN: [
+    PERMISSIONS.DASHBOARD_VIEW,
+    PERMISSIONS.BRANCH_MANAGE,
+    PERMISSIONS.ROLE_MANAGE,
+    PERMISSIONS.USER_MANAGE,
+    PERMISSIONS.LEARNER_MANAGE,
+    PERMISSIONS.GUARDIAN_MANAGE,
+    PERMISSIONS.AUDIT_VIEW,
+    PERMISSIONS.SETTINGS_MANAGE,
     PERMISSIONS.COURSE_READ,
     PERMISSIONS.COURSE_CREATE,
     PERMISSIONS.COURSE_UPDATE,
@@ -43,9 +60,10 @@ export const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
     PERMISSIONS.QUIZ_READ,
     PERMISSIONS.QUIZ_TAKE,
     PERMISSIONS.QUIZ_MANAGE,
-    PERMISSIONS.USER_MANAGE,
   ],
   INSTRUCTOR: [
+    PERMISSIONS.DASHBOARD_VIEW,
+    PERMISSIONS.LEARNER_MANAGE,
     PERMISSIONS.COURSE_READ,
     PERMISSIONS.COURSE_CREATE,
     PERMISSIONS.COURSE_UPDATE,
@@ -56,6 +74,7 @@ export const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
     PERMISSIONS.QUIZ_MANAGE,
   ],
   STUDENT: [
+    PERMISSIONS.DASHBOARD_VIEW,
     PERMISSIONS.COURSE_READ,
     PERMISSIONS.ASSIGNMENT_READ,
     PERMISSIONS.ASSIGNMENT_SUBMIT,
