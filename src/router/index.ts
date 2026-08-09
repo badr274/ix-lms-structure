@@ -3,20 +3,20 @@ import { courseRoutes } from '@features/courses/routes';
 import { authRoutes } from '@features/auth/routes';
 import { PERMISSIONS, ROLES } from '@core/permissions';
 import { authGuard } from './guards/auth.guard';
-import { branches } from "@features/branches/branch.ts";
+import { branches as branchesRoutes } from "@features/branches/branch.ts";
 
 const genericRoutes: RouteRecordRaw[] = [
-  {
-    path: '/branches',
-    name: 'branches',
-    component: () => import('@shared/components/layout/GenericSectionView.vue'),
-    meta: {
-      requiresAuth: true,
-      title: 'Branches',
-      roles: [ROLES.ADMIN],
-      permissions: [PERMISSIONS.BRANCH_MANAGE],
-    },
-  },
+  // {
+  //   path: '/branches',
+  //   name: 'branches',
+  //   component: () => import('@shared/components/layout/GenericSectionView.vue'),
+  //   meta: {
+  //     requiresAuth: true,
+  //     title: 'Branches',
+  //     roles: [ROLES.ADMIN],
+  //     permissions: [PERMISSIONS.BRANCH_MANAGE],
+  //   },
+  // },
   {
     path: '/roles',
     name: 'roles',
@@ -103,6 +103,7 @@ export const router = createRouter({
     },
     ...authRoutes,
     ...courseRoutes,
+    ...branchesRoutes,
     ...genericRoutes,
     {
       path: '/:pathMatch(.*)*',
