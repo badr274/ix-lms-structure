@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useRoute } from 'vue-router';
-import AppLayout from './AppLayout.vue';
 import PageHeader from './PageHeader.vue';
 import InviteUserModal from '@features/auth/components/InviteUserModal.vue';
 import { useModal } from '@shared/components/modals';
@@ -89,33 +88,31 @@ async function handleActionClick() {
 </script>
 
 <template>
-  <AppLayout :title="sectionMeta.title">
-    <div class="flex flex-col w-full">
-      <!-- Reusable Consistent PageHeader -->
-      <PageHeader
-        :title="sectionMeta.title"
-        :description="sectionMeta.description"
-        :action-text="sectionMeta.actionText"
-        @action="handleActionClick"
-      />
+  <div class="flex flex-col w-full">
+    <!-- Reusable Consistent PageHeader -->
+    <PageHeader
+      :title="sectionMeta.title"
+      :description="sectionMeta.description"
+      :action-text="sectionMeta.actionText"
+      @action="handleActionClick"
+    />
 
-      <!-- Content Area -->
-      <div class="flex-1 w-full flex flex-col pt-2">
-        <div class="p-8 sm:p-12 text-center text-muted-foreground border border-dashed border-border rounded-2xl flex flex-col items-center justify-center gap-3 bg-muted/20">
-          <div class="size-12 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xl">
-            ✨
-          </div>
-          <h3 class="font-ibm font-semibold text-foreground text-base m-0">
-            {{ sectionMeta.title }} Section Ready
-          </h3>
-          <p class="text-xs text-muted-foreground max-w-md m-0">
-            {{ sectionMeta.description }}
-          </p>
+    <!-- Content Area -->
+    <div class="flex-1 w-full flex flex-col pt-2">
+      <div class="p-8 sm:p-12 text-center text-muted-foreground border border-dashed border-border rounded-2xl flex flex-col items-center justify-center gap-3 bg-muted/20">
+        <div class="size-12 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xl">
+          ✨
         </div>
+        <h3 class="font-ibm font-semibold text-foreground text-base m-0">
+          {{ sectionMeta.title }} Section Ready
+        </h3>
+        <p class="text-xs text-muted-foreground max-w-md m-0">
+          {{ sectionMeta.description }}
+        </p>
       </div>
     </div>
 
     <!-- Invite User Modal (Figma 59:1013) -->
     <InviteUserModal v-model:open="isInviteModalOpen" />
-  </AppLayout>
+  </div>
 </template>

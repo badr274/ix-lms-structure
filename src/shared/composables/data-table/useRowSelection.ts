@@ -1,5 +1,5 @@
 import { computed, ref, toValue, type ComputedRef, type MaybeRefOrGetter, type Ref } from 'vue'
-import type { RowId, RowLike } from '@/components/shared/data-table/types'
+import type { RowId, RowLike } from '@shared/types/main-table-types'
 
 export interface UseRowSelectionReturn<TData> {
     selectedIds: ComputedRef<RowId[]>

@@ -1,5 +1,5 @@
 import type { SortingState } from '@tanstack/vue-table'
-import type { FilterState, QueryParams, QueryParamValue } from './types'
+import type { FilterState, QueryParams, QueryParamValue } from '@shared/types/main-table-types'
 
 /* --------------------------------- guards --------------------------------- */
 

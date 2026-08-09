@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 import { useUiStore } from '@stores/ui.store';
 import { IconMenu } from '@shared/components/icons';
 import ThemeToggle from './ThemeToggle.vue';
@@ -15,15 +16,23 @@ const props = defineProps<Props>();
 
 const route = useRoute();
 const uiStore = useUiStore();
+const { t, te } = useI18n();
 
 const displayTitle = computed(() => {
+  const name = route.name?.toString();
+  if (name && te(`nav.${name}`)) {
+    return t(`nav.${name}`);
+  }
+  if (route.meta?.titleKey && te(route.meta.titleKey as string)) {
+    return t(route.meta.titleKey as string);
+  }
   if (props.title) return props.title;
   if (route.meta?.title) return route.meta.title as string;
-  const name = route.name?.toString();
-  if (name === 'dashboard') return 'Dashboard';
-  if (name === 'courses-list') return 'Courses';
+  if (name === 'dashboard') return t('nav.dashboard');
+  if (name === 'courses-list') return t('nav.courses');
   const path = route.path.replace('/', '');
-  if (!path) return 'Dashboard';
+  if (!path) return t('nav.dashboard');
+  if (te(`nav.${path}`)) return t(`nav.${path}`);
   return path.charAt(0).toUpperCase() + path.slice(1).replace('-', ' ');
 });
 </script>
@@ -70,7 +79,7 @@ const displayTitle = computed(() => {
       </div>
     </div>
 
-    <!-- Header Bottom Divider Line (Figma Rectangle 50) -->
+    <!-- Header Divider Line (Figma Rectangle 50) -->
     <div class="h-px w-full bg-border" />
   </header>
 </template>

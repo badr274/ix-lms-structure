@@ -1,14 +1,14 @@
-import type { BuildQueryFn, MappedResponse, QueryParams, RequestFn, ResponseMapper } from './types'
-import { isFilled, isRecord, toNumber, toSearchParams } from '@core/utils/data-table.ts'
+import type { BuildQueryFn, MappedResponse, QueryParams, RequestFn, ResponseMapper } from './main-table-types'
+import { isFilled, isRecord, toNumber, toSearchParams } from '@core/utils/data-table'
 
 export const defaultBuildQuery: BuildQueryFn = ({
-                                                    page,
-                                                    pageSize,
-                                                    search,
-                                                    sorting,
-                                                    filters,
-                                                    extra,
-                                                }) => {
+    page,
+    pageSize,
+    search,
+    sorting,
+    filters,
+    extra,
+}) => {
     const query: QueryParams = { ...extra, page, limit: pageSize }
 
     if (search) query.search = search
@@ -46,7 +46,7 @@ export function createDefaultResponseMapper<TData>(): ResponseMapper<TData> {
     }
 }
 
-export const defaultRequest: RequestFn = async (url, params, signal) => {
+export const defaultRequest: RequestFn = async (url: string, params: QueryParams, signal?: AbortSignal) => {
     const queryString = toSearchParams(params).toString()
     const separator = url.includes('?') ? '&' : '?'
     const fullUrl = queryString ? `${url}${separator}${queryString}` : url
