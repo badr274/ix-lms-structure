@@ -9,54 +9,51 @@ interface Props {
   label?: string;
   rules?: any;
   placeholder?: string;
-  rows?: number;
-  maxlength?: number;
   required?: boolean;
   disabled?: boolean;
+  rows?: number;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  rows: 4,
   required: false,
   disabled: false,
+  rows: 4,
 });
 
 const { value, errorMessage, meta } = props.rules !== undefined
   ? useField<string>(() => props.name, props.rules)
   : useField<string>(() => props.name);
 
-const charCount = computed(() => (value.value ? value.value.length : 0));
 const hasError = computed(() => !!errorMessage.value && meta.touched);
 </script>
 
 <template>
-  <div class="flex flex-col gap-1.5 w-full text-start">
-    <!-- Label & Counter -->
-    <div class="flex justify-between items-center">
-      <Label v-if="label" :for="name" class="text-sm font-medium text-foreground">
-        {{ label }}
-        <span v-if="required" class="text-destructive font-bold ms-0.5">*</span>
-      </Label>
-      <span v-if="maxlength" class="text-xs text-muted-foreground font-mono">
-        {{ charCount }} / {{ maxlength }}
-      </span>
-    </div>
+  <div class="flex flex-col gap-1.5 w-full text-start select-none">
+    <!-- Shadcn Label -->
+    <Label
+      v-if="label"
+      :for="name"
+      class="font-zain text-[14px] text-foreground font-normal flex items-center gap-1 cursor-pointer"
+    >
+      <span>{{ label }}</span>
+      <span v-if="required" class="text-destructive font-bold ms-0.5">*</span>
+    </Label>
 
-    <!-- Textarea Component from Shadcn Vue -->
+    <!-- Shadcn Textarea -->
     <Textarea
       :id="name"
       v-model="value"
       :rows="rows"
-      :maxlength="maxlength"
       :placeholder="placeholder"
       :disabled="disabled"
-      :class="[
-        hasError && 'border-destructive focus-visible:ring-destructive/20 bg-destructive/5'
-      ]"
+      :aria-invalid="hasError"
     />
 
-    <!-- Inline Error -->
-    <span v-if="hasError" class="text-xs font-medium text-destructive flex items-center gap-1 mt-0.5">
+    <!-- Inline Validation Error -->
+    <span
+      v-if="hasError"
+      class="text-xs font-medium text-destructive flex items-center gap-1 ms-3 animate-in fade-in slide-in-from-top-1"
+    >
       ⚠️ {{ errorMessage }}
     </span>
   </div>

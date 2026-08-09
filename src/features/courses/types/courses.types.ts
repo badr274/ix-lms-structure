@@ -10,6 +10,7 @@ export interface Course {
   title: BilingualText;
   description?: BilingualText;
   coverImage?: string;
+  category?: string;
   price: number;
   status: CourseStatus;
   createdAt: string;
@@ -19,6 +20,7 @@ export interface Course {
 export interface CreateCourseDto {
   title: BilingualText;
   description?: BilingualText;
+  category?: string;
   price: number;
   coverImage?: File;
 }

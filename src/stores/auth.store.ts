@@ -11,7 +11,7 @@ export interface UserProfile {
 
 export const useAuthStore = defineStore('auth', () => {
   const token = ref<string | null>(localStorage.getItem('auth_token'));
-  
+
   const savedUser = localStorage.getItem('auth_user');
   let parsedUser: UserProfile | null = null;
   if (savedUser) {
@@ -21,7 +21,7 @@ export const useAuthStore = defineStore('auth', () => {
       parsedUser = null;
     }
   }
-  
+
   const user = ref<UserProfile | null>(parsedUser);
 
   const isAuthenticated = computed(() => !!token.value);
@@ -34,6 +34,21 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.setItem('auth_user', JSON.stringify(newUser));
   }
 
+  function updateUserRole(newRole: UserRole) {
+    if (user.value) {
+      user.value.role = newRole;
+      localStorage.setItem('auth_user', JSON.stringify(user.value));
+    } else {
+      user.value = {
+        id: '1',
+        name: 'Saeed Kamel',
+        email: 'saeed.kamel@example.com',
+        role: newRole,
+      };
+      localStorage.setItem('auth_user', JSON.stringify(user.value));
+    }
+  }
+
   function logout() {
     token.value = null;
     user.value = null;
@@ -41,5 +56,13 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.removeItem('auth_user');
   }
 
-  return { token, user, isAuthenticated, isAdmin, setSession, logout };
+  return {
+    token,
+    user,
+    isAuthenticated,
+    isAdmin,
+    setSession,
+    updateUserRole,
+    logout,
+  };
 });
